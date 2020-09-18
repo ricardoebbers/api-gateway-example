@@ -1,0 +1,27 @@
+version: '3'
+services:
+  registry:
+    build: registry
+    container_name: registry
+    expose:
+      - "8761"
+  rest-service:
+    build: rest-service
+    expose:
+      - "8762"
+    depends_on:
+      - registry
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://registry:8761/eureka
+  gateway:
+    build: gateway
+    container_name: gateway
+    ports:
+      - "127.0.0.1:8080:8760"
+    depends_on:
+      - registry
+      - rest-service
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://registry:8761/eureka
